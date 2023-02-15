@@ -115,7 +115,6 @@ rust_bindgen {
     cpp_std: "c++17",
     host_supported: true,
     bindgen_flags: [
-        "--size_t-is-usize",
         "--allowlist-function=bt_.*",
         "--allowlist-function=bthh_.*",
         "--allowlist-function=btgatt_.*",
