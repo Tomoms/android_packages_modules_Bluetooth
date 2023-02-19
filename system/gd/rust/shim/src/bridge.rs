@@ -5,7 +5,7 @@ pub use crate::hci::*;
 pub use crate::stack::*;
 
 #[cxx::bridge(namespace = bluetooth::shim::rust)]
-#[allow(unused_must_use)]
+#[allow(unused_must_use, clippy::extra_unused_type_parameters)]
 pub mod ffi {
     extern "Rust" {
         type Stack;

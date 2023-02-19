@@ -8,7 +8,7 @@ use tokio::runtime::Runtime;
 use tokio::sync::mpsc::{unbounded_channel, UnboundedSender};
 
 #[cxx::bridge(namespace = bluetooth::shim::rust)]
-#[allow(unused_must_use)]
+#[allow(unused_must_use, clippy::extra_unused_type_parameters)]
 mod ffi {
     unsafe extern "C++" {
         include!("callbacks/callbacks.h");
