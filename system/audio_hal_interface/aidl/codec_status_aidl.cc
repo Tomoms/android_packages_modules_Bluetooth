@@ -96,6 +96,19 @@ bool sbc_offloading_capability_match(const SbcCapabilities& sbc_capability,
 
 bool aac_offloading_capability_match(const AacCapabilities& aac_capability,
                                      const AacConfiguration& aac_config) {
+  auto channelmodematch = !ContainedInVector(aac_capability.channelMode, aac_config.channelMode);
+  auto objecttypematch = !ContainedInVector(aac_capability.objectType, aac_config.objectType);
+  auto bitspersamplematch = !ContainedInVector(aac_capability.bitsPerSample,
+                         aac_config.bitsPerSample);
+  auto sampleratematch = !ContainedInVector(aac_capability.sampleRateHz,
+                         aac_config.sampleRateHz);
+  auto other = (!aac_capability.variableBitRateSupported &&
+       aac_config.variableBitRateEnabled);
+  LOG(WARNING) << __func__ << ": TOM: channelmode " << channelmodematch;
+  LOG(WARNING) << __func__ << ": TOM: objecttypematch " << objecttypematch;
+  LOG(WARNING) << __func__ << ": TOM: bitspersamplematch  " << bitspersamplematch;
+  LOG(WARNING) << __func__ << ": TOM: sampleratematch " << sampleratematch;
+  LOG(WARNING) << __func__ << ": TOM: other " << other;
   if (!ContainedInVector(aac_capability.channelMode, aac_config.channelMode) ||
       !ContainedInVector(aac_capability.objectType, aac_config.objectType) ||
       !ContainedInVector(aac_capability.bitsPerSample,
@@ -525,20 +538,26 @@ bool UpdateOffloadingCapabilities(
           SessionType::A2DP_HARDWARE_OFFLOAD_ENCODING_DATAPATH);
   std::unordered_set<CodecType> codec_type_set;
   for (auto preference : framework_preference) {
+    LOG(WARNING) << "TOM: " << preference.ToString();
     switch (preference.codec_type) {
       case BTAV_A2DP_CODEC_INDEX_SOURCE_SBC:
+        LOG(WARNING) << "TOM: fw argument allows inserting sbc";
         codec_type_set.insert(CodecType::SBC);
         break;
       case BTAV_A2DP_CODEC_INDEX_SOURCE_AAC:
+        LOG(WARNING) << "TOM: fw argument allows inserting aac";
         codec_type_set.insert(CodecType::AAC);
         break;
       case BTAV_A2DP_CODEC_INDEX_SOURCE_APTX:
+        LOG(WARNING) << "TOM: fw argument allows inserting aptx";
         codec_type_set.insert(CodecType::APTX);
         break;
       case BTAV_A2DP_CODEC_INDEX_SOURCE_APTX_HD:
+        LOG(WARNING) << "TOM: fw argument allows inserting aptxhd";
         codec_type_set.insert(CodecType::APTX_HD);
         break;
       case BTAV_A2DP_CODEC_INDEX_SOURCE_LDAC:
+        LOG(WARNING) << "TOM: fw argument allows  ldac";
         codec_type_set.insert(CodecType::LDAC);
         break;
       case BTAV_A2DP_CODEC_INDEX_SOURCE_LC3:
@@ -547,6 +566,7 @@ bool UpdateOffloadingCapabilities(
                      << ", not implemented";
         break;
       case BTAV_A2DP_CODEC_INDEX_SOURCE_OPUS:
+        LOG(WARNING) << "TOM: fw inserting opus";
         codec_type_set.insert(CodecType::OPUS);
         break;
       case BTAV_A2DP_CODEC_INDEX_SINK_SBC:
