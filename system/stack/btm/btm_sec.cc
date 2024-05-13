@@ -1918,7 +1918,7 @@ void btm_sec_conn_req(const RawAddress& bda, const DEV_CLASS dc) {
   /* Host is not interested or approved connection.  Save BDA and DC and */
   /* pass request to L2CAP */
   btm_sec_cb.connecting_bda = bda;
-  memcpy(btm_sec_cb.connecting_dc, &dc, DEV_CLASS_LEN);
+  memcpy(btm_sec_cb.connecting_dc, dc, DEV_CLASS_LEN);
 
   p_dev_rec = btm_find_or_alloc_dev(bda);
   p_dev_rec->sm4 |= BTM_SM4_CONN_PEND;
@@ -4356,13 +4356,15 @@ tBTM_STATUS btm_sec_execute_procedure(tBTM_SEC_DEV_REC* p_dev_rec) {
     // Check link status of BR/EDR
     if (!(p_dev_rec->sec_rec.sec_flags & BTM_SEC_AUTHENTICATED)) {
       if (p_dev_rec->IsLocallyInitiated()) {
-        if (p_dev_rec->sec_rec.security_required & BTM_SEC_OUT_AUTHENTICATE) {
-          LOG_DEBUG("Outgoing authentication Required");
+        if (p_dev_rec->sec_rec.security_required &
+            (BTM_SEC_OUT_AUTHENTICATE | BTM_SEC_OUT_ENCRYPT)) {
+          LOG_DEBUG("Outgoing authentication/encryption Required");
           start_auth = true;
         }
       } else {
-        if (p_dev_rec->sec_rec.security_required & BTM_SEC_IN_AUTHENTICATE) {
-          LOG_DEBUG("Incoming authentication Required");
+        if (p_dev_rec->sec_rec.security_required &
+            (BTM_SEC_IN_AUTHENTICATE | BTM_SEC_IN_ENCRYPT)) {
+          LOG_DEBUG("Incoming authentication/encryption Required");
           start_auth = true;
         }
       }
